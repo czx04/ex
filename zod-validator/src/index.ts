@@ -1,16 +1,16 @@
-import express from 'express';
-import { z } from 'zod';
+import express from 'express'
+import { z } from 'zod'
 
-const app = express();
-const PORT = 3000;
+const app = express()
+const PORT = 3000
 
-app.use(express.json());
+app.use(express.json())
 
 type User = {
-    username: string;
-    email: string;
-    password: string;
-};
+    username: string
+    email: string
+    password: string
+}
 
 const userSchema = z.object({
     username: z.string().min(1, { message: 'must be at least 1 character' }).max(50),
@@ -22,20 +22,20 @@ const userSchema = z.object({
         .regex(/[A-Z]/, { message: 'Password must contain at least 1 uppercase letter' })
         .regex(/\d/, { message: 'Password must contain at least 1 number' })
         .regex(/[^a-zA-Z0-9]/, { message: 'Password must contain at least 1 special character' })
-});
+})
 
 const user: User = {
     username: 'mn',
     email: 'hungdugmail.com',
     password: 'aA1!'
-};
+}
 
 try {
-    console.log(userSchema.parse(user));
+    console.log(userSchema.parse(user))
 } catch (e : any) {
-    console.error(e.errors);
+    console.error(e.errors)
 }
 
 app.listen(PORT, () => {
-    console.log(`App running on port: ${PORT}`);
-});
+    console.log(`App running on port: ${PORT}`)
+})
