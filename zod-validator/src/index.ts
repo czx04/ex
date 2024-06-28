@@ -9,7 +9,9 @@ app.use(express.json())
 type User = {
     username: string
     email: string
-    password: string
+    password: string,
+    age: number,
+    testnumber: number,
 }
 
 const userSchema = z.object({
@@ -21,13 +23,34 @@ const userSchema = z.object({
         .regex(/[a-z].*[a-z]/, { message: 'Password must contain at least 2 lowercase letters' })
         .regex(/[A-Z]/, { message: 'Password must contain at least 1 uppercase letter' })
         .regex(/\d/, { message: 'Password must contain at least 1 number' })
-        .regex(/[^a-zA-Z0-9]/, { message: 'Password must contain at least 1 special character' })
+        .regex(/[^a-zA-Z0-9]/, { message: 'Password must contain at least 1 special character' }),
+    age: z.number().refine((age)=> age > 18, { message: 'must be > 18 age'}),
+    testnumber: z.number().superRefine((val, ctx) => {
+        if (val < 10) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "should be >= 10",
+            fatal: true,
+          });
+      
+          return z.NEVER;
+        }
+      
+        if (val !== 12) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "should be twelve",
+          });
+        }
+      })
 })
 
 const user: User = {
     username: 'mn',
-    email: 'hungdugmail.com',
-    password: 'aA1!'
+    email: 'hungdu@gmail.com',
+    password: 'aabA1!',
+    age : 16,
+    testnumber: 9
 }
 
 try {
