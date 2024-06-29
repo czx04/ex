@@ -62,7 +62,6 @@ try {
     console.error(e.errors)
 }
 
-
 const schemaarray = z.string().array().nonempty().max(5)
 console.log(schemaarray.parse(['hungdu','hd','dh','hdc','kjh']))
 
@@ -79,8 +78,30 @@ stringPromise.parse(myPromise)
     // if promise có giá trị là string thì in ro string k thì .catch ra lỗi 
   })
   .catch(error => {
-    console.error("Validation failed:", error);
+    console.error("Validation failed:", error)
   })
+
+// ban co the xay dung ham bang zod de check type runtime 
+const countlength = z
+  .function()
+  .args(z.string()) // doi so nhan vao la 1 string
+  .returns(z.number()) //return ve 1 number la do dai chuoi 
+  .implement((x) => {
+    // TypeScript knows x is a string!
+    return x.trim().length
+  })
+console.log(countlength("hungdudz")) // => 8
+console.log(countlength(" asdf ")) // => 4
+
+
+// custom schema 
+const px = z.custom<`{number}px`>((val)=> {
+    return typeof val === "string" ? /^\d+px$/.test(val): false
+})
+type px = z.infer<typeof px> 
+
+console.log(px.parse("23px"))
+console.log(px.parse("23ow"))
 
 
 app.listen(PORT, () => {
