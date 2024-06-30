@@ -11,6 +11,25 @@ export const registerValidator = validate(checkSchema({
             options: {
                 minLength: 6,
             }
+        },
+        isString: true,
+        notEmpty: true
+    },
+    confirm_password: {
+        isStrongPassword: {
+            options: {
+                minLength: 6,
+            }
+        },
+        isString: true,
+        notEmpty: true,
+        custom: {
+            options: (value, {req}) => {
+                if(value !== req.body.password) {
+                    throw new Error(`pw and cf pw not match`)
+                }
+                return true
+            }
         }
     }
 }))
